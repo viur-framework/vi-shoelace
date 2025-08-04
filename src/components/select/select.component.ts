@@ -662,6 +662,13 @@ export default class SlSelect extends ShoelaceElement implements ShoelaceFormCon
     this.formControlController.emitInvalidEvent(event);
   }
 
+  selectAll(event: Event) {
+    event.stopPropagation();
+    this.valueHasChanged=true;
+    this.setSelectedOptions(this.getAllOptions());
+
+  }
+
   @watch('disabled', { waitUntilFirstUpdate: true })
   handleDisabledChange() {
     // Close the listbox when the control is disabled
@@ -918,6 +925,18 @@ export default class SlSelect extends ShoelaceElement implements ShoelaceFormCon
                 : ''}
 
               <slot name="suffix" part="suffix" class="select__suffix"></slot>
+              ${this.multiple ? html`
+                <slot name="selectAll-icon" part="selectAll-icon" class="select__selectAll-icon">
+                   <button
+                      type="button"
+                      class="select__selectAll-btn"
+                      @click=${this.selectAll}
+                      @mousedown=${this.selectAll}
+                      tabindex="-1"
+                    >
+                  <sl-icon  name="check2-all"></sl-icon>
+                   </button>
+                </slot>` : ''}
 
               <slot name="expand-icon" part="expand-icon" class="select__expand-icon">
                 <sl-icon library="system" name="chevron-down"></sl-icon>
