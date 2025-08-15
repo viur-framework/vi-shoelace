@@ -181,7 +181,7 @@ export default class SlCombobox extends ShoelaceElement {
       event.preventDefault();
       const item = menuItems[this.activeItemIndex];
       if (item) {
-        this.input.value = item.textContent.trim() ?? '';
+        this.input.value = item.textContent?.trim() ?? '';
         this.value = item.value ?? '';
         this.dropdown.hide();
         //@ts-ignore
@@ -207,7 +207,7 @@ export default class SlCombobox extends ShoelaceElement {
 
   onItemSelected(event: CustomEvent) {
     let item = event.detail.item as SlMenuItem
-    this.input.value = item.textContent.trim() ?? '';
+    this.input.value = item.textContent?.trim() ?? '';
     this.value = item.value ?? '';
 
 
