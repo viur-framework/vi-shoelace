@@ -306,8 +306,30 @@ export default css`
     margin-inline-start: var(--sl-spacing-small);
   }
 
+
   .select--open .select__expand-icon {
     rotate: -180deg;
+  }
+  /* Select all */
+  .select__selectAll-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: inherit;
+    color: var(--sl-input-icon-color);
+    border: none;
+    background: none;
+    padding: 0;
+    transition: var(--sl-transition-fast) color;
+    cursor: pointer;
+  }
+  .select__selectAll-icon {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    transition: var(--sl-transition-medium) rotate ease;
+    rotate: 0;
+    margin-inline-start: var(--sl-spacing-small);
   }
 
   /* Listbox */
