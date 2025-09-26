@@ -1,4 +1,5 @@
 import { animateTo, stopAnimations } from '../../internal/animate.js';
+import { blurActiveElement } from '../../internal/closeActiveElement.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { getAnimation, setDefaultAnimation } from '../../utilities/animation-registry.js';
 import { HasSlotController } from '../../internal/slot.js';
@@ -158,7 +159,7 @@ export default class SlDialog extends ShoelaceElement {
   async handleOpenChange() {
     if (this.open) {
       // Show
-      this.emit('sl-show',{bubbles:false});
+      this.emit('sl-show', { bubbles: false });
       this.addOpenListeners();
       this.originalTrigger = document.activeElement as HTMLElement;
       this.modal.activate();
@@ -205,10 +206,11 @@ export default class SlDialog extends ShoelaceElement {
         animateTo(this.overlay, overlayAnimation.keyframes, overlayAnimation.options)
       ]);
 
-      this.emit('sl-after-show',{bubbles:false});
+      this.emit('sl-after-show', { bubbles: false });
     } else {
       // Hide
-      this.emit('sl-hide',{bubbles:false});
+      blurActiveElement(this);
+      this.emit('sl-hide', { bubbles: false });
       this.removeOpenListeners();
       this.modal.deactivate();
 
@@ -242,7 +244,7 @@ export default class SlDialog extends ShoelaceElement {
         setTimeout(() => trigger.focus());
       }
 
-      this.emit('sl-after-hide',{bubbles:false});
+      this.emit('sl-after-hide', { bubbles: false });
     }
   }
 

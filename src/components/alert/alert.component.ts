@@ -1,4 +1,5 @@
 import { animateTo, stopAnimations } from '../../internal/animate.js';
+import { blurActiveElement } from '../../internal/closeActiveElement.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { getAnimation, setDefaultAnimation } from '../../utilities/animation-registry.js';
 import { HasSlotController } from '../../internal/slot.js';
@@ -73,7 +74,14 @@ export default class SlAlert extends ShoelaceElement {
   @property({ type: Boolean, reflect: true }) closable = false;
 
   /** The alert's theme variant. */
-  @property({ reflect: true }) variant: 'primary' | 'success' | 'neutral' | 'warning' | 'danger' | 'info' | 'secondary' = 'primary';
+  @property({ reflect: true }) variant:
+    | 'primary'
+    | 'success'
+    | 'neutral'
+    | 'warning'
+    | 'danger'
+    | 'info'
+    | 'secondary' = 'primary';
 
   /**
    * The length of time, in milliseconds, the alert will show before closing itself. If the user interacts with
@@ -143,7 +151,7 @@ export default class SlAlert extends ShoelaceElement {
   async handleOpenChange() {
     if (this.open) {
       // Show
-      this.emit('sl-show', {bubbles:false});
+      this.emit('sl-show', { bubbles: false });
 
       if (this.duration < Infinity) {
         this.restartAutoHide();
@@ -154,10 +162,11 @@ export default class SlAlert extends ShoelaceElement {
       const { keyframes, options } = getAnimation(this, 'alert.show', { dir: this.localize.dir() });
       await animateTo(this.base, keyframes, options);
 
-      this.emit('sl-after-show',{bubbles:false});
+      this.emit('sl-after-show', { bubbles: false });
     } else {
       // Hide
-      this.emit('sl-hide',{bubbles:false});
+      blurActiveElement(this);
+      this.emit('sl-hide', { bubbles: false });
 
       clearTimeout(this.autoHideTimeout);
       clearInterval(this.remainingTimeInterval);
@@ -167,7 +176,7 @@ export default class SlAlert extends ShoelaceElement {
       await animateTo(this.base, keyframes, options);
       this.base.hidden = true;
 
-      this.emit('sl-after-hide',{bubbles:false});
+      this.emit('sl-after-hide', { bubbles: false });
     }
   }
 
