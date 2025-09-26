@@ -70,7 +70,7 @@ export default class SlTabGroup extends ShoelaceElement {
   @property() placement: 'top' | 'bottom' | 'start' | 'end' = 'top';
 
   /** use a styling variant */
-  @property({ type: String, reflect: true }) variant: "indicator" | "flap" = "indicator";
+  @property({ type: String, reflect: true }) variant: 'indicator' | 'flap' = 'indicator';
 
   /**
    * When set to auto, navigating tabs with the arrow keys will instantly show the corresponding tab panel. When set to
@@ -112,8 +112,7 @@ export default class SlTabGroup extends ShoelaceElement {
           .filter(m => m.attributeName === 'active' && (m.target as HTMLElement).tagName.toLowerCase() === 'sl-tab')
           .map(m => m.target as SlTab);
         const newActiveTab = tabs.find(tab => tab.active);
-
-        if (newActiveTab) {
+        if (newActiveTab && this.tabs.find(x => x === newActiveTab)) {
           this.setActiveTab(newActiveTab);
         }
       }
@@ -131,7 +130,7 @@ export default class SlTabGroup extends ShoelaceElement {
         const intersectionObserver = new IntersectionObserver((entries, observer) => {
           if (entries[0].intersectionRatio > 0) {
             this.setAriaLabels();
-            this.setActiveTab(this.getActiveTab() ?? this.tabs[0], { emitEvents: false });
+            this.setActiveTab(this.getActiveTab() ?? this.tabs[0], { emitEvents: false }, true);
             observer.unobserve(entries[0].target);
           }
         });
@@ -265,14 +264,18 @@ export default class SlTabGroup extends ShoelaceElement {
     });
   }
 
-  private setActiveTab(tab: SlTab, options?: { emitEvents?: boolean; scrollBehavior?: 'auto' | 'smooth' }) {
+  private setActiveTab(
+    tab: SlTab,
+    options?: { emitEvents?: boolean; scrollBehavior?: 'auto' | 'smooth' },
+    init: boolean = false
+  ) {
     options = {
       emitEvents: true,
       scrollBehavior: 'auto',
       ...options
     };
 
-    if (tab !== this.activeTab && !tab.disabled) {
+    if (init || (tab !== this.activeTab && !tab.disabled)) {
       const previousTab = this.activeTab;
       this.activeTab = tab;
 
@@ -462,7 +465,7 @@ export default class SlTabGroup extends ShoelaceElement {
           'tab-group--bottom': this.placement === 'bottom',
           'tab-group--start': this.placement === 'start',
           'tab-group--end': this.placement === 'end',
-          'tab-group--variant-flap':this.variant === 'flap',
+          'tab-group--variant-flap': this.variant === 'flap',
           'tab-group--rtl': this.localize.dir() === 'rtl',
           'tab-group--has-scroll-controls': this.hasScrollControls
         })}
