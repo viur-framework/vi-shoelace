@@ -259,12 +259,11 @@ export class SubmenuController implements ReactiveController {
   }
 
   renderSubmenu() {
-    const isRtl = getComputedStyle(this.host).direction === 'rtl';
-
     // Always render the slot, but conditionally render the outer <sl-popup>
     if (!this.isConnected) {
       return html` <slot name="submenu" hidden></slot> `;
     }
+    const isRtl = getComputedStyle(this.host).direction === 'rtl';
 
     return html`
       <sl-popup
