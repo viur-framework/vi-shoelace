@@ -9,6 +9,11 @@ on:
       - "v0.*"
       - "v1.*"
 
+# Needed for npm Trusted Publishing (OIDC)
+permissions:
+  contents: read
+  id-token: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,11 +31,12 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: ${{ matrix.node-version }}
+        registry-url: "https://registry.npmjs.org"
         cache: 'npm'
-    - run: npx playwright install-deps
+
+    - name: Ensure npm supports trusted publishing
+      run: npm install -g npm@latest
     - run: npm ci
     - run: npm run build
-    - uses: JS-DevTools/npm-publish@v3
-      with:
-        access: "public"
-        token: ${{ secrets.NPM_TOKEN }}
+    - name: Publish to npm (Trusted Publishing)
+      run: npm publish --access public
