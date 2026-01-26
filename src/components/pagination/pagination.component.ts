@@ -226,7 +226,7 @@ export default class SlPagination extends ShoelaceElement {
         : html`
             ${this.showFirst
               ? html`<sl-tooltip content="${getResouceValue('pageBtn.first')}"
-                  ><sl-button size="small" ?disabled=${this.value == 1} data-page-no="first" variant="text"><sl-icon part="first" library="bootstrap" name="chevron-bar-left"></sl-icon></sl-button
+                  ><sl-button size="small" ?disabled=${this.value == 1} data-page-no="first" variant="text"><sl-icon part="first" name="chevron-bar-left"></sl-icon></sl-button
                 ></sl-tooltip>`
               : nothing}
             <sl-tooltip content="${getResouceValue('pageBtn.prev')}">
@@ -238,7 +238,7 @@ export default class SlPagination extends ShoelaceElement {
             ></sl-tooltip>
             ${this.showLast
               ? html`<sl-tooltip content="${getResouceValue('pageBtn.last')}"
-                  ><sl-button size="small" ?disabled=${this.value == this.pageCount} data-page-no="last" variant="text"><sl-icon part="last" library="bootstrap" name="chevron-bar-right"></sl-icon></sl-button
+                  ><sl-button size="small" ?disabled=${this.value == this.pageCount} data-page-no="last" variant="text"><sl-icon part="last" name="chevron-bar-right"></sl-icon></sl-button
                 ></sl-tooltip>`
               : nothing}
           `}
