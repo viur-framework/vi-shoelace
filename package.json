@@ -46,7 +46,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/viur-framework/viur-shoelace.git"
+    "url": "https://github.com/viur-framework/vi-shoelace"
   },
   "bugs": {
     "url": "https://github.com/viur-framework/viur-shoelace/issues"
