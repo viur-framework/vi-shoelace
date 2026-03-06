@@ -130,6 +130,24 @@ declare global {
   }
 }
 
+
+function normalizeForSort(val: string): string {
+  // DD.MM.YYYY → YYYY-MM-DD for correct chronological sorting
+  const m = val.trim().match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/)
+  if (m) return `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`
+
+  // Make pure numbers (including leading zeros) sortable numerically
+  const n = val.trim().match(/^\d+$/)
+  if (n) {
+    const asBigInt = BigInt(n[0]).toString()
+    const width = Math.max(20, asBigInt.length)
+    return asBigInt.padStart(width, '0')
+  }
+
+  return val  // Strings remain unchanged
+}
+
+
 /** Sort a givn table, idx is the column, direction can be asc or desc */
 function sortTable(table:HTMLTableElement,idx:number,direction:string) {
   var rows, switching, i, x, y, shouldSwitch;
@@ -146,7 +164,10 @@ function sortTable(table:HTMLTableElement,idx:number,direction:string) {
       x = rows[i].getElementsByTagName("TD")[idx];
       y = rows[i + 1].getElementsByTagName("TD")[idx];
       try {
-        let sortResult = naturalCompare(x.innerHTML.toLowerCase(), y.innerHTML.toLowerCase())
+        const sortResult = naturalCompare(
+          normalizeForSort(x.innerHTML.toLowerCase()),
+          normalizeForSort(y.innerHTML.toLowerCase())
+        )
 
         if (direction === "asc") {
           if (sortResult > 0) {
