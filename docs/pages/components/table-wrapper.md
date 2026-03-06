@@ -25,14 +25,14 @@ Table Wrapper can be used to extend a simple Table with interactive functions
         <td>Hello 200</td>
         <td>Alpha</td>
         <td>3</td>
-        <td>02.05.2020</td>
+        <td>02.05.2020, 12:30</td>
         <td>0001</td>
       </tr>
       <tr>
         <td>Hello 20</td>
         <td>Gamma</td>
         <td>40</td>
-        <td>25.02.2025</td>
+        <td>02.05.2020, 12:25</td>
         <td>0005</td>
       </tr>
       <tr>

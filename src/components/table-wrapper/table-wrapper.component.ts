@@ -132,6 +132,20 @@ declare global {
 
 
 function normalizeForSort(val: string): string {
+  // D.M.YYYY, HH:MM(:SS) → YYYY-MM-DDTHH:MM:SS for correct chronological sorting
+  const dt = val
+    .trim()
+    .match(/^(\d{1,2})\.(\d{1,2})\.(\d{4}),\s*(\d{1,2}):(\d{2})(?::(\d{2}))?$/);
+  if (dt) {
+    const day = dt[1].padStart(2, '0');
+    const month = dt[2].padStart(2, '0');
+    const year = dt[3];
+    const hour = dt[4].padStart(2, '0');
+    const minute = dt[5].padStart(2, '0');
+    const second = (dt[6] ?? '00').padStart(2, '0');
+    return `${year}-${month}-${day}T${hour}:${minute}:${second}`;
+  }
+
   // DD.MM.YYYY → YYYY-MM-DD for correct chronological sorting
   const m = val.trim().match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/)
   if (m) return `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`
