@@ -33,7 +33,7 @@ export default css`
 
   div[part=no-data] {
     margin: 0 1em;
-    color: rgb(var(--sl-color-gray-300));
+    color: var(--sl-color-gray-300);
   }
 
   sl-button {
@@ -45,7 +45,7 @@ export default css`
     cursor: default;
   }
   sl-button sl-icon {
-    color: rgb(var(--sl-color-neutral-600));
+    color: var(--sl-color-neutral-600);
   }
 
   sl-button::part(base) {
