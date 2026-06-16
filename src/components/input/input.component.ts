@@ -164,7 +164,13 @@ export default class SlInput extends ShoelaceElement implements ShoelaceFormCont
   @property() autocapitalize: 'off' | 'none' | 'on' | 'sentences' | 'words' | 'characters';
 
   /** Indicates whether the browser's autocorrect feature is on or off. */
-  @property() autocorrect: 'off' | 'on';
+  @property({
+    converter: {
+      fromAttribute: (value: string | null): boolean => value !== 'off',
+      toAttribute: (value: boolean): string => (value ? 'on' : 'off')
+    }
+  })
+  autocorrect: boolean = true;
 
   /**
    * Specifies what permission the browser has to provide assistance in filling out form field values. Refer to
@@ -492,7 +498,7 @@ export default class SlInput extends ShoelaceElement implements ShoelaceFormCont
               .value=${live(this.value)}
               autocapitalize=${ifDefined(this.autocapitalize)}
               autocomplete=${ifDefined(this.autocomplete)}
-              autocorrect=${ifDefined(this.autocorrect)}
+              autocorrect=${this.autocorrect ? 'on' : 'off'}
               ?autofocus=${this.autofocus}
               spellcheck=${this.spellcheck}
               pattern=${ifDefined(this.pattern)}
