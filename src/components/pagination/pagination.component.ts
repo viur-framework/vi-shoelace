@@ -20,17 +20,33 @@ import styles from './pagination.styles.js';
  *
  * @dependency sl-button,sl-select,sl-icon
  *
- * @event sl-page-change - Emitted when current page changed   .
- * @event sl-page-before-change - Emitted before  page changed,use can defaultPrevented ,then sl-page-change can not be emit    .
+ * @event sl-page-change - Emitted when current page changed.
+ * @event sl-page-before-change - Emitted before page changed, can be defaultPrevented to cancel.
  *
- * @slot prefix The prefix slot.
- * @slot no-data - when total=0 to show .
- * @slot default - tool bar end to show .
-
+ * @slot prefix - Content before the navigation.
+ * @slot no-data - Custom empty state content (shown when total=0).
+ * @slot first-icon - Icon inside the first-page button.
+ * @slot prev-icon - Icon inside the previous-page button.
+ * @slot next-icon - Icon inside the next-page button.
+ * @slot last-icon - Icon inside the last-page button.
+ * @slot - Content after the navigation (e.g. toolbar extras).
+ *
  * @csspart base - The component's base wrapper.
- * @csspart pageWrap - The component's to page button  wrapper.
- *
- *
+ * @csspart no-data - The no-data message container.
+ * @csspart pageWrap - The page number buttons wrapper.
+ * @csspart first-button - The first-page navigation button.
+ * @csspart prev-button - The previous-page navigation button.
+ * @csspart next-button - The next-page navigation button.
+ * @csspart last-button - The last-page navigation button.
+ * @csspart first - The icon inside the first-page button.
+ * @csspart prev - The icon inside the previous-page button.
+ * @csspart next - The icon inside the next-page button.
+ * @csspart last - The icon inside the last-page button.
+ * @csspart page-button - Every page number button.
+ * @csspart active-page-button - The currently active page number button (combined with page-button).
+ * @csspart page-jump - The page number input (simple mode or showPageChange).
+ * @csspart page - The "von X" span in simple mode.
+ * @csspart show-size-change - The page size selector.
  */
 @resourceLocal()
 @customElement('sl-pagination')
@@ -82,7 +98,7 @@ export default class SlPagination extends ShoelaceElement {
     }
   }
   _renderSimple() {
-    return html`<sl-input size="small" type="number" step="1" min="1" max=${this.pageCount} .value=${this.value + ''}></sl-input><span part="page" class="pageCountSpan">von ${this.pageCount}</span>`;
+    return html`<sl-input part="page-jump" size="small" type="number" step="1" min="1" max=${this.pageCount} .value=${this.value + ''}></sl-input><span part="page" class="pageCountSpan">von ${this.pageCount}</span>`;
   }
   _renderPageButton() {
     const pageCount = this.pageCount;
@@ -107,7 +123,7 @@ export default class SlPagination extends ShoelaceElement {
     for (let i = prev; i <= next; i++) {
       array.push(i);
     }
-    return html`${repeat(array, item => html`<sl-button size="small" data-page-no=${item} .variant=${this.value == item ? 'primary' : 'default'}>${item}</sl-button> `)}`;
+    return html`${repeat(array, item => html`<sl-button part="${this.value == item ? 'page-button active-page-button' : 'page-button'}" size="small" data-page-no=${item} .variant=${this.value == item ? 'primary' : 'default'}>${item}</sl-button> `)}`;
   }
 
   _renderPage() {
@@ -144,7 +160,7 @@ export default class SlPagination extends ShoelaceElement {
       this._eventDispose2 = onEvent(baseDiv, 'sl-input,sl-select[part=show-size-change]', 'sl-change', (event: Event) => {
         let el = (event as any).delegateTarget as HTMLElement;
         //@ts-ignore
-        const beforeEvent = this.emit('sl-page-before-change');
+        const beforeEvent = this.emit('sl-page-before-change', { cancelable: true });
         if (!beforeEvent.defaultPrevented) {
           console.log("FF")
           console.log(el.matches('sl-select[part=show-size-change]'))
@@ -200,7 +216,7 @@ export default class SlPagination extends ShoelaceElement {
   }
   goToPage(pageNo: number) {
     //@ts-ignore
-    const event = this.emit('sl-page-before-change');
+    const event = this.emit('sl-page-before-change', { cancelable: true });
     if (!event.defaultPrevented) {
       if (!isNaN(pageNo)) {
         let tempValue = pageNo;
@@ -226,19 +242,23 @@ export default class SlPagination extends ShoelaceElement {
         : html`
             ${this.showFirst
               ? html`<sl-tooltip content="${getResouceValue('pageBtn.first')}"
-                  ><sl-button size="small" ?disabled=${this.value == 1} data-page-no="first" variant="text"><sl-icon part="first" name="chevron-bar-left"></sl-icon></sl-button
+                  ><sl-button part="first-button" size="small" ?disabled=${this.value == 1} data-page-no="first" variant="text"
+                    ><slot name="first-icon"><sl-icon part="first" name="chevron-bar-left"></sl-icon></slot></sl-button
                 ></sl-tooltip>`
               : nothing}
             <sl-tooltip content="${getResouceValue('pageBtn.prev')}">
-              <sl-button ?disabled=${this.value == 1} data-page-no="prev" size="small" left variant="text"><sl-icon part="prev" name="chevron-left" ?disabled=${this.value <= 1}></sl-icon></sl-button
+              <sl-button part="prev-button" ?disabled=${this.value == 1} data-page-no="prev" size="small" left variant="text"
+                ><slot name="prev-icon"><sl-icon part="prev" name="chevron-left"></sl-icon></slot></sl-button
             ></sl-tooltip>
             <div part="pageWrap">${this.simple ? this._renderSimple() : this._renderPage()}</div>
             <sl-tooltip content="${getResouceValue('pageBtn.next')}"
-              ><sl-button size="small" ?disabled=${this.value + 1 > this.pageCount} data-page-no="next" right variant="text"><sl-icon part="next" name="chevron-right" ?disabled=${this.value <= 1}></sl-icon></sl-button
+              ><sl-button part="next-button" size="small" ?disabled=${this.value + 1 > this.pageCount} data-page-no="next" right variant="text"
+                ><slot name="next-icon"><sl-icon part="next" name="chevron-right"></sl-icon></slot></sl-button
             ></sl-tooltip>
             ${this.showLast
               ? html`<sl-tooltip content="${getResouceValue('pageBtn.last')}"
-                  ><sl-button size="small" ?disabled=${this.value == this.pageCount} data-page-no="last" variant="text"><sl-icon part="last" name="chevron-bar-right"></sl-icon></sl-button
+                  ><sl-button part="last-button" size="small" ?disabled=${this.value == this.pageCount} data-page-no="last" variant="text"
+                    ><slot name="last-icon"><sl-icon part="last" name="chevron-bar-right"></sl-icon></slot></sl-button
                 ></sl-tooltip>`
               : nothing}
           `}
