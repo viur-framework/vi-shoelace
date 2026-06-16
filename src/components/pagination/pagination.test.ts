@@ -350,6 +350,85 @@ describe('<sl-pagination>', () => {
   });
 
   // ---------------------------------------------------------------------------
+  // Accessibility (WCAG)
+  // ---------------------------------------------------------------------------
+  describe('accessibility', () => {
+    it('should have role="navigation" on the base element', async () => {
+      const el = await fixture<SlPagination>(html`<sl-pagination total="100"></sl-pagination>`);
+      const base = el.shadowRoot!.querySelector('[part~="base"]')!;
+      expect(base.getAttribute('role')).to.equal('navigation');
+    });
+
+    it('should have an aria-label on the base element', async () => {
+      const el = await fixture<SlPagination>(html`<sl-pagination total="100"></sl-pagination>`);
+      const base = el.shadowRoot!.querySelector('[part~="base"]')!;
+      expect(base.getAttribute('aria-label')).to.not.be.empty;
+    });
+
+    it('should have aria-label on the prev-button', async () => {
+      const el = await fixture<SlPagination>(html`<sl-pagination total="100"></sl-pagination>`);
+      const btn = el.shadowRoot!.querySelector('[part~="prev-button"]')!;
+      expect(btn.getAttribute('aria-label')).to.not.be.empty;
+    });
+
+    it('should have aria-label on the next-button', async () => {
+      const el = await fixture<SlPagination>(html`<sl-pagination total="100"></sl-pagination>`);
+      const btn = el.shadowRoot!.querySelector('[part~="next-button"]')!;
+      expect(btn.getAttribute('aria-label')).to.not.be.empty;
+    });
+
+    it('should have aria-label on the first-button when showFirst is true', async () => {
+      const el = await fixture<SlPagination>(html`<sl-pagination total="100" .showFirst=${true}></sl-pagination>`);
+      const btn = el.shadowRoot!.querySelector('[part~="first-button"]')!;
+      expect(btn.getAttribute('aria-label')).to.not.be.empty;
+    });
+
+    it('should have aria-label on the last-button when showLast is true', async () => {
+      const el = await fixture<SlPagination>(html`<sl-pagination total="100" .showLast=${true}></sl-pagination>`);
+      const btn = el.shadowRoot!.querySelector('[part~="last-button"]')!;
+      expect(btn.getAttribute('aria-label')).to.not.be.empty;
+    });
+
+    it('should have aria-label on each page number button', async () => {
+      const el = await fixture<SlPagination>(html`<sl-pagination total="100" page-size="10"></sl-pagination>`);
+      const pageButtons = el.shadowRoot!.querySelectorAll('[part~="page-button"]');
+      pageButtons.forEach(btn => {
+        expect(btn.getAttribute('aria-label')).to.not.be.empty;
+      });
+    });
+
+    it('should set aria-current="page" on the active page button only', async () => {
+      const el = await fixture<SlPagination>(html`<sl-pagination total="100" page-size="10" value="4"></sl-pagination>`);
+      const activeButtons = el.shadowRoot!.querySelectorAll('[aria-current="page"]');
+      expect(activeButtons.length).to.equal(1);
+      expect(activeButtons[0].textContent?.trim()).to.equal('4');
+    });
+
+    it('should not set aria-current on inactive page buttons', async () => {
+      const el = await fixture<SlPagination>(html`<sl-pagination total="100" page-size="10" value="1"></sl-pagination>`);
+      const pageButtons = el.shadowRoot!.querySelectorAll('[part~="page-button"]:not([part~="active-page-button"])');
+      pageButtons.forEach(btn => {
+        expect(btn.hasAttribute('aria-current')).to.be.false;
+      });
+    });
+
+    it('should have a live region in the shadow DOM', async () => {
+      const el = await fixture<SlPagination>(html`<sl-pagination total="100"></sl-pagination>`);
+      const liveRegion = el.shadowRoot!.querySelector('[role="status"][aria-live="polite"]');
+      expect(liveRegion).to.exist;
+    });
+
+    it('should update the live region text when page changes', async () => {
+      const el = await fixture<SlPagination>(html`<sl-pagination total="100" page-size="10" value="1"></sl-pagination>`);
+      el.goToPage(5);
+      await elementUpdated(el);
+      const liveRegion = el.shadowRoot!.querySelector('[role="status"]')!;
+      expect(liveRegion.textContent).to.not.be.empty;
+      expect(liveRegion.textContent).to.include('5');
+    });
+  });
+
+  // ---------------------------------------------------------------------------
   // Alignment
   // ---------------------------------------------------------------------------
   describe('alignment', () => {

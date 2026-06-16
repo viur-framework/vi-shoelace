@@ -3,10 +3,13 @@ const resouce = {
     total: (total: number) => {
       return `${total} Enträge`;
     },
-    first: 'Erster',
-    last: 'Lezter',
-    prev: 'vorheriger',
-    next: 'nächster'
+    first: 'Erste Seite',
+    last: 'Letzte Seite',
+    prev: 'Vorherige Seite',
+    next: 'Nächste Seite',
+    navigation: 'Seitennavigation',
+    page: (page: number, total: number) => `Seite ${page} von ${total}`,
+    pageAnnounce: (page: number, total: number) => `Seite ${page} von ${total}`
   },
   transferSelectedFun: (selected: number, filterSize: number, _total: number) => {
     let temp = filterSize > 0 ? ' Einträge' : ' Eintrag';

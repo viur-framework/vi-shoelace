@@ -3,10 +3,13 @@ const resouce = {
     total: (total: number) => {
       return `${total} items`;
     },
-    first: 'First',
-    last: 'Last',
-    prev: 'Prev',
-    next: 'Next'
+    first: 'First page',
+    last: 'Last page',
+    prev: 'Previous page',
+    next: 'Next page',
+    navigation: 'Pagination',
+    page: (page: number, total: number) => `Page ${page} of ${total}`,
+    pageAnnounce: (page: number, total: number) => `Page ${page} of ${total}`
   },
   transferSelectedFun: (selected: number, filterSize: number, _total: number) => {
     let temp = filterSize > 0 ? ' items' : ' item';
