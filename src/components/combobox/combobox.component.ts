@@ -7,6 +7,7 @@ import SlInput from '../input/input.component.js';
 import styles from './combobox.styles.js';
 import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 import {scrollIntoView} from "../../internal/scroll.js";
+import {escapeRegExp} from "../../internal/string.js";
 import ShoelaceElement from '../../internal/shoelace-element.js';
 import type {SlChangeEvent} from '../../events/sl-change.js';
 import type {SlInputEvent} from '../../events/sl-input.js';
@@ -154,9 +155,10 @@ export default class SlCombobox extends ShoelaceElement {
 
       this.dropdown.show();
 
-      // Focus on a menu item
+      // Clear the active state from the currently active item. The input keeps real DOM focus
+      // throughout (see aria-activedescendant); only the virtual "active" item indicator moves.
       if (this.activeItemIndex !== -1) {
-        menuItems[this.activeItemIndex].focus();
+        menuItems[this.activeItemIndex].active = false;
       }
 
       if (event.key === 'ArrowDown') {
@@ -172,6 +174,7 @@ export default class SlCombobox extends ShoelaceElement {
           this.activeItemIndex--;
         }
       }
+      menuItems[this.activeItemIndex].active = true;
       scrollIntoView(menuItems[this.activeItemIndex], this.dropdown.panel);
 
       return;
@@ -181,14 +184,17 @@ export default class SlCombobox extends ShoelaceElement {
       event.preventDefault();
       const item = menuItems[this.activeItemIndex];
       if (item) {
-        this.input.value = item.textContent?.trim() ?? '';
-        this.value = item.value ?? '';
-        this.dropdown.hide();
         //@ts-ignore
         const oldevent = this.emit('sl-item-select', {
           detail: {item},
           cancelable: true,
         });
+        if (oldevent.defaultPrevented) {
+          return;
+        }
+        this.input.value = item.textContent?.trim() ?? '';
+        this.value = item.value ?? '';
+        this.dropdown.hide();
         this.emit('sl-change'); //also emit change
       }
     }
@@ -207,18 +213,21 @@ export default class SlCombobox extends ShoelaceElement {
 
   onItemSelected(event: CustomEvent) {
     let item = event.detail.item as SlMenuItem
-    this.input.value = item.textContent?.trim() ?? '';
-    this.value = item.value ?? '';
-
 
     //@ts-ignore
     const oldevent = this.emit('sl-item-select', {
       detail: {item},
       cancelable: true,
     });
+    if (oldevent.defaultPrevented) {
+      return;
+    }
+
+    this.input.value = item.textContent?.trim() ?? '';
+    this.value = item.value ?? '';
     this.emit('sl-change'); //also emit change
 
-    if (!event.defaultPrevented || !oldevent.defaultPrevented) {
+    if (!event.defaultPrevented) {
       this.dropdown.hide();
     }
     this.prepareSuggestions(this.value)
@@ -267,7 +276,7 @@ export default class SlCombobox extends ShoelaceElement {
   }
 
   highlightSearchTextInSuggestions(items: Suggestion[], searchText: string) {
-    const regex = new RegExp(searchText, 'gi');
+    const regex = new RegExp(escapeRegExp(searchText), 'gi');
     return items.map(item => {
         const highlightedSuggestion = item.text.replace(
           regex,

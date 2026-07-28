@@ -1,19 +1,25 @@
-/*import { expect, fixture, html } from '@open-wc/testing';
+import { expect, fixture, html } from '@open-wc/testing';
 import { sendKeys } from '@web/test-runner-commands';
+import Sinon from 'sinon';
+import '../../../dist/components/combobox/combobox.js';
+import type SlCombobox from './combobox.js';
+import type { SuggestionSource } from './combobox.js';
+import type SlInput from '../input/input.js';
+import type SlMenu from '../menu/menu.js';
+import type SlMenuItem from '../menu-item/menu-item.js';
 
-import type SlInput from '../input/input';
-import type SlCombobox from "./combobox";
-import type { SuggestionSource } from "./combobox";
-import type SlMenu from "../menu/menu";
-import Sinon from "sinon";
-import SlMenuItem from "../menu-item/menu-item";
-// @ts-ignore
-const dummyDataSource: SuggestionSource = async (text) => ([
-  {text: 'test', value: 'test'},
-  {text: 'test2', value: 'test2value'},
-]);
+const dummyDataSource: SuggestionSource = async () => [
+  { text: 'test', value: 'test' },
+  { text: 'test2', value: 'test2value' },
+];
 
-describe('<sl-input>', () => {
+describe('<sl-combobox>', () => {
+  it('should render a component', async () => {
+    const el = await fixture(html` <sl-combobox></sl-combobox> `);
+
+    expect(el).to.exist;
+  });
+
   describe('no source', () => {
     it('should be accessible', async () => {
       const el = await fixture<SlCombobox>(html`<sl-combobox label="test"></sl-combobox>`);
@@ -36,16 +42,14 @@ describe('<sl-input>', () => {
 
   describe('with source', () => {
     it('should be accessible', async () => {
-      // @ts-ignore
-      const emptyDataSource = async (search: string) => ([]);
+      const emptyDataSource: SuggestionSource = async () => [];
       const el = await fixture<SlCombobox>(html`<sl-combobox label="test"></sl-combobox>`);
       el.source = emptyDataSource;
       await expect(el).to.be.accessible();
     });
 
     it('should show empty message when no data is available', async () => {
-      // @ts-ignore
-      const emptyDataSource = async (search: string) => ([]);
+      const emptyDataSource: SuggestionSource = async () => [];
       const el = await fixture<SlCombobox>(html`<sl-combobox></sl-combobox>`);
       el.source = emptyDataSource;
       const input = el.shadowRoot?.querySelector('[part="input"]') as SlInput;
@@ -57,15 +61,9 @@ describe('<sl-input>', () => {
       });
 
       await expect(menu).to.contain.text('no data found');
-    })
+    });
 
     it('should suggest items coming back from source method', async () => {
-      // @ts-ignore
-      const dummyDataSource: SuggestionSource = async (search: string) => ([
-        {text: 'test', value: 'test'},
-        {text: 'test2', value: 'test2'},
-      ]);
-
       const el = await fixture<SlCombobox>(html`<sl-combobox></sl-combobox>`);
       el.source = dummyDataSource;
       const input = el.shadowRoot?.querySelector('[part="input"]') as SlInput;
@@ -81,11 +79,6 @@ describe('<sl-input>', () => {
     });
 
     it('should activate first item when pressing arrow down', async () => {
-      // @ts-ignore
-      const dummyDataSource: SuggestionSource = async (search: string) => ([
-        {text: 'test', value: 'test'},
-      ]);
-
       const el = await fixture<SlCombobox>(html`<sl-combobox></sl-combobox>`);
       el.source = dummyDataSource;
       const input = el.shadowRoot?.querySelector('[part="input"]') as SlInput;
@@ -103,7 +96,7 @@ describe('<sl-input>', () => {
       await expect(menu.getAllItems()[0].getAttribute('active')).to.equal('');
     });
 
-    it('should keep focus on input when navigation with arrow keys', async () => {
+    it('should keep focus on input when navigating with arrow keys', async () => {
       const el = await fixture<SlCombobox>(html`<sl-combobox></sl-combobox>`);
       el.source = dummyDataSource;
       const input = el.shadowRoot?.querySelector('[part="input"]') as SlInput;
@@ -185,10 +178,10 @@ describe('<sl-input>', () => {
 
     it('should set the input value to the text of the suggestion when selected', async () => {
       let selectedItem: SlMenuItem;
-      const selectHandler = (event: CustomEvent) => selectedItem = event.detail.item;
+      const selectHandler = (event: CustomEvent) => (selectedItem = event.detail.item);
       const el = await fixture<SlCombobox>(html`<sl-combobox></sl-combobox>`);
       el.source = dummyDataSource;
-      el.addEventListener('sl-item-select', selectHandler);
+      el.addEventListener('sl-item-select', selectHandler as EventListener);
       const input = el.shadowRoot?.querySelector('[part="input"]') as SlInput;
       input.focus();
 
@@ -207,14 +200,14 @@ describe('<sl-input>', () => {
       await sendKeys({
         press: 'Enter'
       });
-      // @ts-ignore
-      await expect(input.value).to.equal(selectedItem.textContent);
+
+      await expect(input.value).to.equal(selectedItem!.textContent?.trim());
     });
 
     it('should not set the input value to the text of the suggestion when select event default is prevented', async () => {
       const el = await fixture<SlCombobox>(html`<sl-combobox></sl-combobox>`);
       el.source = dummyDataSource;
-      el.addEventListener('sl-item-select', (event) => event.preventDefault());
+      el.addEventListener('sl-item-select', event => event.preventDefault());
       const input = el.shadowRoot?.querySelector('[part="input"]') as SlInput;
       input.focus();
 
@@ -261,7 +254,7 @@ describe('<sl-input>', () => {
           <sl-combobox></sl-combobox>
           <div></div>
         </div>`);
-      const el = fix.querySelector('sl-combobox')!;
+      const el = fix.querySelector('sl-combobox') as SlCombobox;
       el.source = dummyDataSource;
       const input = el.shadowRoot?.querySelector('[part="input"]') as SlInput;
       input.focus();
@@ -273,9 +266,9 @@ describe('<sl-input>', () => {
       const fix = await fixture(html`
         <div>
           <sl-combobox></sl-combobox>
-            <input class="other-focus"/>
+          <input class="other-focus" />
         </div>`);
-      const el = fix.querySelector('sl-combobox')!;
+      const el = fix.querySelector('sl-combobox') as SlCombobox;
       const otherFocus: HTMLInputElement = fix.querySelector('.other-focus')!;
       el.source = dummyDataSource;
       const input = el.shadowRoot?.querySelector('[part="input"]') as SlInput;
@@ -283,12 +276,12 @@ describe('<sl-input>', () => {
       input.focus();
 
       await sendKeys({
-        type: 'a',
+        type: 'a'
       });
 
       otherFocus.focus();
 
-      input.focus()
+      input.focus();
 
       await expect(el.dropdown.open).to.be.true;
     });
@@ -302,26 +295,36 @@ describe('<sl-input>', () => {
       input.focus();
 
       await sendKeys({
-        type: 'a',
+        type: 'a'
       });
 
       const firstSuggestion = menu.getAllItems()[0];
 
       firstSuggestion.click();
 
-      await expect(input.value).to.equal(firstSuggestion.textContent);
+      await expect(input.value).to.equal(firstSuggestion.textContent?.trim());
+    });
+  });
+
+  describe('highlightSearchTextInSuggestions', () => {
+    it('should highlight a plain-text match', async () => {
+      const el = await fixture<SlCombobox>(html` <sl-combobox></sl-combobox> `);
+      const result = el.highlightSearchTextInSuggestions([{ text: 'foobar', value: 'foobar' }], 'foo');
+
+      expect(result[0].text).to.equal('<span class="highlight">foo</span>bar');
+    });
+
+    it('should not throw when the search text contains regex special characters', async () => {
+      const el = await fixture<SlCombobox>(html` <sl-combobox></sl-combobox> `);
+
+      expect(() => el.highlightSearchTextInSuggestions([{ text: 'foo(bar', value: 'foo(bar' }], 'foo(')).to.not.throw();
+    });
+
+    it('should treat regex special characters in the search text as literal', async () => {
+      const el = await fixture<SlCombobox>(html` <sl-combobox></sl-combobox> `);
+      const result = el.highlightSearchTextInSuggestions([{ text: 'foo(bar', value: 'foo(bar' }], 'foo(');
+
+      expect(result[0].text).to.equal('<span class="highlight">foo(</span>bar');
     });
   });
 });
-*/
-
-import { expect, fixture, html } from '@open-wc/testing';
-
-describe('<sl-combobox>', () => {
-  it('should render a component', async () => {
-    const el = await fixture(html` <sl-combobox></sl-combobox> `);
-
-    expect(el).to.exist;
-  });
-});
-
