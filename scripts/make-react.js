@@ -16,7 +16,9 @@ fs.mkdirSync(reactDir, { recursive: true });
 
 // Fetch component metadata
 const metadata = JSON.parse(fs.readFileSync(path.join(outdir, 'custom-elements.json'), 'utf8'));
-const components = getAllComponents(metadata);
+// Sort deterministically: the underlying custom-elements-manifest analyzer doesn't guarantee a stable
+// file scan order, which otherwise makes src/react/index.ts's export order (and diff) shuffle between builds.
+const components = getAllComponents(metadata).sort((a, b) => a.tagName.localeCompare(b.tagName));
 const index = [];
 
 for await (const component of components) {
