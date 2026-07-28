@@ -31,7 +31,16 @@ const translation: Translation = {
   selectAColorFromTheScreen: '从屏幕中选择一种颜色',
   showPassword: '显示密码',
   slideNum: slide => `幻灯片 ${slide}`,
-  toggleColorFormat: '切换颜色模式'
+  toggleColorFormat: '切换颜色模式',
+
+  firstPage: '第一页',
+  previousPage: '上一页',
+  nextPage: '下一页',
+  lastPage: '最后一页',
+  pagination: '分页',
+  paginationNoData: '暂无数据',
+  goToPage: (page, total) => `第${page}页，共${total}页`,
+  ofTotalPages: total => `共${total}页`
 };
 
 registerTranslation(translation);

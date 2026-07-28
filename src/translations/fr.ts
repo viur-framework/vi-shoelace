@@ -31,7 +31,16 @@ const translation: Translation = {
   selectAColorFromTheScreen: `Sélectionnez une couleur à l'écran`,
   showPassword: 'Montrer le mot de passe',
   slideNum: slide => `Diapositive ${slide}`,
-  toggleColorFormat: 'Changer le format de couleur'
+  toggleColorFormat: 'Changer le format de couleur',
+
+  firstPage: 'Première page',
+  previousPage: 'Page précédente',
+  nextPage: 'Page suivante',
+  lastPage: 'Dernière page',
+  pagination: 'Pagination',
+  paginationNoData: 'Aucune donnée !',
+  goToPage: (page, total) => `Page ${page} sur ${total}`,
+  ofTotalPages: total => `sur ${total}`
 };
 
 registerTranslation(translation);

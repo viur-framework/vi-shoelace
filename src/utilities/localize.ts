@@ -45,4 +45,14 @@ export interface Translation extends DefaultTranslation {
   showPassword: string;
   slideNum: (slide: number) => string;
   toggleColorFormat: string;
+
+  // Pagination — optional until translated for every language pack; falls back to English via the localize fallback chain.
+  firstPage?: string;
+  previousPage?: string;
+  nextPage?: string;
+  lastPage?: string;
+  pagination?: string;
+  paginationNoData?: string;
+  goToPage?: (page: number, total: number) => string;
+  ofTotalPages?: (total: number) => string;
 }

@@ -2,10 +2,9 @@ import { html, nothing, PropertyValues, TemplateResult } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import ShoelaceElement from '../../internal/shoelace-element.js';
 import { repeat } from 'lit/directives/repeat.js';
-import resourceLocal from '../../internal/resourceLocal.js';
 import { watchProps } from '../../internal/watchProps.js';
 import { onEvent } from '../../utilities/common.js';
-import { getResouceValue } from '../../utilities/getResouce.js';
+import { LocalizeController } from '../../utilities/localize.js';
 import SlButton from '../button/button.js';
 import SlIcon from '../icon/icon.component.js'
 import SlSelect from '../select/select.component.js'
@@ -45,10 +44,9 @@ import styles from './pagination.styles.js';
  * @csspart page-button - Every page number button.
  * @csspart active-page-button - The currently active page number button (combined with page-button).
  * @csspart page-jump - The page number input (simple mode or showPageChange).
- * @csspart page - The "von X" span in simple mode.
+ * @csspart page - The "of X" span in simple mode.
  * @csspart show-size-change - The page size selector.
  */
-@resourceLocal()
 @customElement('sl-pagination')
 export default class SlPagination extends ShoelaceElement {
   static styles = styles;
@@ -58,6 +56,7 @@ export default class SlPagination extends ShoelaceElement {
     'sl-option': SlOption,
     'sl-input': SlInput
   };
+  private readonly localize = new LocalizeController(this);
   /** Current page */
   @property({ type: Number, reflect: true, attribute: 'value' }) value = 1;
   /** Page Break Size */
@@ -100,7 +99,7 @@ export default class SlPagination extends ShoelaceElement {
     }
   }
   _renderSimple() {
-    return html`<sl-input part="page-jump" size="small" type="number" step="1" min="1" max=${this.pageCount} .value=${this.value + ''}></sl-input><span part="page" class="pageCountSpan">von ${this.pageCount}</span>`;
+    return html`<sl-input part="page-jump" size="small" type="number" step="1" min="1" max=${this.pageCount} .value=${this.value + ''}></sl-input><span part="page" class="pageCountSpan">${this.localize.term('ofTotalPages', this.pageCount)}</span>`;
   }
   _renderPageButton() {
     const pageCount = this.pageCount;
@@ -130,7 +129,7 @@ export default class SlPagination extends ShoelaceElement {
       size="small"
       data-page-no=${item}
       .variant=${this.value == item ? 'primary' : 'default'}
-      aria-label="${getResouceValue('pageBtn.page')(item, pageCount)}"
+      aria-label="${this.localize.term('goToPage', item, pageCount)}"
       aria-current=${this.value == item ? 'page' : nothing}
     >${item}</sl-button> `)}`;
   }
@@ -171,8 +170,6 @@ export default class SlPagination extends ShoelaceElement {
         //@ts-ignore
         const beforeEvent = this.emit('sl-page-before-change', { cancelable: true });
         if (!beforeEvent.defaultPrevented) {
-          console.log("FF")
-          console.log(el.matches('sl-select[part=show-size-change]'))
           if (el.matches('sl-select[part=show-size-change]')) {
             this.pageSize = Number((el as any).value);
           } else {
@@ -185,7 +182,6 @@ export default class SlPagination extends ShoelaceElement {
             if (value > this.pageCount) {
               value = this.pageCount;
             }
-            console.log("GHHH");
             (el as any).value = value;
             this.value = value;
           }
@@ -235,7 +231,7 @@ export default class SlPagination extends ShoelaceElement {
           tempValue = this.pageCount;
         }
         this.value = tempValue;
-        this._announceText = getResouceValue('pageBtn.pageAnnounce')(this.value, this.pageCount);
+        this._announceText = this.localize.term('goToPage', this.value, this.pageCount);
         //@ts-ignore
         this.emit('sl-page-change', {
           detail: { value: this.value }
@@ -245,34 +241,34 @@ export default class SlPagination extends ShoelaceElement {
   }
 
   render() {
-    return html`<div part="base" role="navigation" aria-label="${getResouceValue('pageBtn.navigation')}" page-align=${this.align}>
+    return html`<div part="base" role="navigation" aria-label="${this.localize.term('pagination')}" page-align=${this.align}>
       <div role="status" aria-live="polite" aria-atomic="true" class="visually-hidden">${this._announceText}</div>
       <slot name="prefix"></slot>
       ${this.total == 0
-        ? html`<div part="no-data"><slot name="no-data">${getResouceValue('noData')}</slot></div>`
+        ? html`<div part="no-data"><slot name="no-data">${this.localize.term('paginationNoData')}</slot></div>`
         : html`
             ${this.showFirst
-              ? html`<sl-tooltip content="${getResouceValue('pageBtn.first')}"
+              ? html`<sl-tooltip content="${this.localize.term('firstPage')}"
                   ><sl-button part="first-button" size="small" ?disabled=${this.value == 1} data-page-no="first" variant="text"
-                    aria-label="${getResouceValue('pageBtn.first')}"
+                    aria-label="${this.localize.term('firstPage')}"
                     ><slot name="first-icon"><sl-icon part="first" name="chevron-bar-left"></sl-icon></slot></sl-button
                 ></sl-tooltip>`
               : nothing}
-            <sl-tooltip content="${getResouceValue('pageBtn.prev')}">
+            <sl-tooltip content="${this.localize.term('previousPage')}">
               <sl-button part="prev-button" ?disabled=${this.value == 1} data-page-no="prev" size="small" left variant="text"
-                aria-label="${getResouceValue('pageBtn.prev')}"
+                aria-label="${this.localize.term('previousPage')}"
                 ><slot name="prev-icon"><sl-icon part="prev" name="chevron-left"></sl-icon></slot></sl-button
             ></sl-tooltip>
             <div part="pageWrap">${this.simple ? this._renderSimple() : this._renderPage()}</div>
-            <sl-tooltip content="${getResouceValue('pageBtn.next')}"
+            <sl-tooltip content="${this.localize.term('nextPage')}"
               ><sl-button part="next-button" size="small" ?disabled=${this.value + 1 > this.pageCount} data-page-no="next" right variant="text"
-                aria-label="${getResouceValue('pageBtn.next')}"
+                aria-label="${this.localize.term('nextPage')}"
                 ><slot name="next-icon"><sl-icon part="next" name="chevron-right"></sl-icon></slot></sl-button
             ></sl-tooltip>
             ${this.showLast
-              ? html`<sl-tooltip content="${getResouceValue('pageBtn.last')}"
+              ? html`<sl-tooltip content="${this.localize.term('lastPage')}"
                   ><sl-button part="last-button" size="small" ?disabled=${this.value == this.pageCount} data-page-no="last" variant="text"
-                    aria-label="${getResouceValue('pageBtn.last')}"
+                    aria-label="${this.localize.term('lastPage')}"
                     ><slot name="last-icon"><sl-icon part="last" name="chevron-bar-right"></sl-icon></slot></sl-button
                 ></sl-tooltip>`
               : nothing}
