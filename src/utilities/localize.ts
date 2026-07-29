@@ -55,4 +55,7 @@ export interface Translation extends DefaultTranslation {
   paginationNoData?: string;
   goToPage?: (page: number, total: number) => string;
   ofTotalPages?: (total: number) => string;
+
+  // Back to top — optional until translated for every language pack; falls back to English via the localize fallback chain.
+  backToTop?: string;
 }

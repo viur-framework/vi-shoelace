@@ -40,7 +40,9 @@ const translation: Translation = {
   pagination: 'Seitennavigation',
   paginationNoData: 'Keine Daten!',
   goToPage: (page, total) => `Seite ${page} von ${total}`,
-  ofTotalPages: total => `von ${total}`
+  ofTotalPages: total => `von ${total}`,
+
+  backToTop: 'Nach oben'
 };
 
 registerTranslation(translation);

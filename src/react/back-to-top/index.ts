@@ -10,7 +10,9 @@ Component.define('sl-back-to-top');
  * @status experimental
  * @viur 0.5
  *
- * @slot - The default slot.
+ * @slot - The default slot. Content must be focusable and keyboard-operable (e.g. a button):
+ * clicks are handled on the wrapper via bubbling, there is no separate keyboard fallback for
+ * non-interactive slotted content.
  *
  * @csspart wrapper - The component's base wrapper.
  */

@@ -32,4 +32,18 @@ describe('<sl-back-to-top>', () => {
       removeSpy.restore();
     });
   });
+
+  describe('accessibility', () => {
+    it('should give the default icon an accessible label', async () => {
+      const el = await fixture<SlBackToTop>(html` <sl-back-to-top></sl-back-to-top> `);
+      const icon = el.shadowRoot?.querySelector('sl-icon');
+
+      expect(icon?.getAttribute('label')).to.not.be.empty;
+    });
+
+    it('should pass accessibility tests', async () => {
+      const el = await fixture<SlBackToTop>(html` <sl-back-to-top></sl-back-to-top> `);
+      await expect(el).to.be.accessible();
+    });
+  });
 });

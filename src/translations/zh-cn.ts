@@ -40,7 +40,9 @@ const translation: Translation = {
   pagination: '分页',
   paginationNoData: '暂无数据',
   goToPage: (page, total) => `第${page}页，共${total}页`,
-  ofTotalPages: total => `共${total}页`
+  ofTotalPages: total => `共${total}页`,
+
+  backToTop: '返回顶部'
 };
 
 registerTranslation(translation);

@@ -42,6 +42,8 @@ A description of the component goes here.
     bottom:35px;
     right:-10px;
     opacity:0;
+    visibility:hidden;
+    pointer-events:none;
   }
   .containerWrapper{
     overflow:hidden;
@@ -50,7 +52,9 @@ A description of the component goes here.
   }
   .toTopButton.scrolled{
     right:85px;
-     opacity:1;
+    opacity:1;
+    visibility:visible;
+    pointer-events:auto;
   }
   
 </style>
@@ -59,3 +63,5 @@ A description of the component goes here.
   <sl-back-to-top target="#scroller4" class="toTopButton"></sl-back-to-top>
 </div>
 ```
+
+Pairing `opacity` with `visibility` and `pointer-events` (not opacity alone) keeps the hidden button out of the tab order and the accessibility tree, and prevents clicking through an invisible element.
