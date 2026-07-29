@@ -18,6 +18,8 @@ export default class SlBackToTop extends ShoelaceElement {
   targetElement:any;
   @query('.back-to-top-wrapper') wrapper: HTMLElement;
 
+  private scrollTarget: EventTarget | null = null;
+  private handleScroll = (e: Event) => this.scolling(e);
 
   /** selector for scroll target */
   @property() target = "html";
@@ -41,16 +43,26 @@ export default class SlBackToTop extends ShoelaceElement {
   }
 
   initSlot(){
+    this.scrollTarget?.removeEventListener("scroll", this.handleScroll);
+
     if (this.target == "html"){
-      document.addEventListener("scroll", (e:Event)=>this.scolling(e))
+      this.scrollTarget = document;
     }else{
       this.targetElement = document.querySelector(this.target)
-      this.targetElement.addEventListener("scroll", (e:Event)=>this.scolling(e))
+      this.scrollTarget = this.targetElement;
     }
+
+    this.scrollTarget?.addEventListener("scroll", this.handleScroll);
   }
 
   firstUpdated() {
     this.initSlot()
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback();
+    this.scrollTarget?.removeEventListener("scroll", this.handleScroll);
+    this.scrollTarget = null;
   }
 
   render() {
