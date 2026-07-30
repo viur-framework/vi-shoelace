@@ -306,6 +306,49 @@ describe('<sl-combobox>', () => {
     });
   });
 
+  describe('accessibility', () => {
+    it('should mark the active suggestion with aria-selected', async () => {
+      const el = await fixture<SlCombobox>(html`<sl-combobox></sl-combobox>`);
+      el.source = dummyDataSource;
+      const input = el.shadowRoot?.querySelector('[part="input"]') as SlInput;
+      const menu = el.shadowRoot?.querySelector('[part="menu"]') as SlMenu;
+      input.focus();
+
+      await sendKeys({ type: 't' });
+      await sendKeys({ press: 'ArrowDown' });
+
+      const items = menu.getAllItems();
+
+      expect(items[0].getAttribute('aria-selected')).to.equal('true');
+      expect(items[1].getAttribute('aria-selected')).to.equal('false');
+    });
+
+    it('should announce the number of suggestions in the live region', async () => {
+      const el = await fixture<SlCombobox>(html`<sl-combobox></sl-combobox>`);
+      el.source = dummyDataSource;
+      const input = el.shadowRoot?.querySelector('[part="input"]') as SlInput;
+      const liveRegion = el.shadowRoot?.querySelector('[role="status"]')!;
+      input.focus();
+
+      await sendKeys({ type: 't' });
+
+      expect(liveRegion.textContent).to.contain('2');
+    });
+
+    it('should announce the empty message in the live region when there are no suggestions', async () => {
+      const emptyDataSource: SuggestionSource = async () => [];
+      const el = await fixture<SlCombobox>(html`<sl-combobox></sl-combobox>`);
+      el.source = emptyDataSource;
+      const input = el.shadowRoot?.querySelector('[part="input"]') as SlInput;
+      const liveRegion = el.shadowRoot?.querySelector('[role="status"]')!;
+      input.focus();
+
+      await sendKeys({ type: 'a' });
+
+      expect(liveRegion.textContent).to.contain(el.emptyMessage);
+    });
+  });
+
   describe('highlightSearchTextInSuggestions', () => {
     it('should highlight a plain-text match', async () => {
       const el = await fixture<SlCombobox>(html` <sl-combobox></sl-combobox> `);

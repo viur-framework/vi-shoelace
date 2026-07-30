@@ -44,7 +44,9 @@ const translation: Translation = {
   goToPage: (page, total) => `Page ${page} of ${total}`,
   ofTotalPages: total => `of ${total}`,
 
-  backToTop: 'Back to top'
+  backToTop: 'Back to top',
+
+  comboboxSuggestionsAvailable: count => (count === 1 ? '1 suggestion available' : `${count} suggestions available`)
 };
 
 registerTranslation(translation);

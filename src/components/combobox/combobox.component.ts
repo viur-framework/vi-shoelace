@@ -9,6 +9,7 @@ import {unsafeHTML} from 'lit/directives/unsafe-html.js';
 import {scrollIntoView} from "../../internal/scroll.js";
 import {escapeRegExp} from "../../internal/string.js";
 import ShoelaceElement from '../../internal/shoelace-element.js';
+import { LocalizeController } from '../../utilities/localize.js';
 import type {SlChangeEvent} from '../../events/sl-change.js';
 import type {SlInputEvent} from '../../events/sl-input.js';
 
@@ -54,6 +55,7 @@ export default class SlCombobox extends ShoelaceElement {
 
   private comboboxId = comboboxIds++;
   private resizeObserver: ResizeObserver;
+  private readonly localize = new LocalizeController(this);
 
   @query('sl-input') input: HTMLInputElement;
   @query('sl-dropdown') dropdown: SlDropdown;
@@ -305,6 +307,9 @@ export default class SlCombobox extends ShoelaceElement {
 
   render() {
     return html`
+      <div role="status" aria-live="polite" aria-atomic="true" class="visually-hidden">
+        ${this.suggestions.length === 0 ? this.emptyMessage : this.localize.term('comboboxSuggestionsAvailable', this.suggestions.length)}
+      </div>
       <sl-dropdown
         part="base"
         closeOnSelect="true"
@@ -350,6 +355,9 @@ export default class SlCombobox extends ShoelaceElement {
           </span>
         </sl-input>
 
+        <!-- TODO(a11y): sl-menu/sl-menu-item unconditionally set role="menu"/"menuitem" in their own
+             connectedCallback, which clobbers the role="listbox" set here and role="option" a combobox
+             needs on its suggestions. Tracked for a follow-up fix that makes the role overridable. -->
         <sl-menu
           part="menu"
           id=${`sl-combobox-menu-${this.comboboxId}`}
@@ -363,6 +371,7 @@ export default class SlCombobox extends ShoelaceElement {
             : this.suggestions.map((item, index) => html`
               <sl-menu-item value=${item.value} id=${this.menuItemId(index)}
                             part="menu-item"
+                            aria-selected=${index === this.activeItemIndex ? 'true' : 'false'}
                             exportparts="base:menu-item__base, prefix:menu-item__prefix, suffix:menu-item__suffix, submenu-icon:menu-item__submenu-icon, label:menu-item__label, checked-icon:menu-item__checked-icon"
 
 

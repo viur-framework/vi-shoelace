@@ -42,7 +42,9 @@ const translation: Translation = {
   goToPage: (page, total) => `Seite ${page} von ${total}`,
   ofTotalPages: total => `von ${total}`,
 
-  backToTop: 'Nach oben'
+  backToTop: 'Nach oben',
+
+  comboboxSuggestionsAvailable: count => (count === 1 ? '1 Vorschlag verfügbar' : `${count} Vorschläge verfügbar`)
 };
 
 registerTranslation(translation);

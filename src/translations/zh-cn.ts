@@ -42,7 +42,9 @@ const translation: Translation = {
   goToPage: (page, total) => `第${page}页，共${total}页`,
   ofTotalPages: total => `共${total}页`,
 
-  backToTop: '返回顶部'
+  backToTop: '返回顶部',
+
+  comboboxSuggestionsAvailable: count => `有 ${count} 个建议`
 };
 
 registerTranslation(translation);

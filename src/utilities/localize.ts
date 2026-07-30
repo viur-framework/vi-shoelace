@@ -58,4 +58,7 @@ export interface Translation extends DefaultTranslation {
 
   // Back to top — optional until translated for every language pack; falls back to English via the localize fallback chain.
   backToTop?: string;
+
+  // Combobox — optional until translated for every language pack; falls back to English via the localize fallback chain.
+  comboboxSuggestionsAvailable?: (count: number) => string;
 }

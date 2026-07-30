@@ -20,10 +20,23 @@ export default css`
 
   sl-menu-item .highlight {
     color: var(--sl-color-primary-500);
+    font-weight: var(--sl-font-weight-bold);
   }
 
   sl-menu-item[active] .highlight {
     color: var(--sl-color-primary-100);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
   }
 
 
