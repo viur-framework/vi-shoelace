@@ -10,6 +10,7 @@ import fm from 'front-matter';
 import fs from 'fs/promises';
 import fso from 'fs';
 import { globby } from 'globby';
+import { createRequire } from 'module';
 import path from 'path';
 import jsdom from 'jsdom';
 const { JSDOM } = jsdom;
@@ -18,7 +19,10 @@ import {optimize} from 'svgo'
 const { outdir } = commandLineArgs({ name: 'outdir', type: String });
 const iconDir = path.join(outdir, '/assets/bootstrap-icons');
 
-const iconPackageData = JSON.parse(await fs.readFile('./node_modules/bootstrap-icons/package.json', 'utf8'));
+// Resolve through Node instead of assuming ./node_modules, so the build also
+// works when the package is installed as a workspace with hoisted dependencies.
+const require = createRequire(import.meta.url);
+const iconPackageData = JSON.parse(await fs.readFile(require.resolve('bootstrap-icons/package.json'), 'utf8'));
 const version = iconPackageData.version;
 const srcPath = `./.cache/icons/icons-${version}`;
 const url = `https://github.com/twbs/icons/archive/v${version}.zip`;
