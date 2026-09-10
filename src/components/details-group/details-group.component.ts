@@ -1,5 +1,5 @@
 import { html } from 'lit';
-import { customElement, queryAssignedNodes } from 'lit/decorators.js';
+import { queryAssignedNodes } from 'lit/decorators.js';
 import styles from './details-group.styles.js';
 import ShoelaceElement from '../../internal/shoelace-element.js';
 
@@ -12,7 +12,6 @@ import ShoelaceElement from '../../internal/shoelace-element.js';
  *
  * @cssproperty --details-gap - The gap between the detail boxes.
  */
-@customElement('sl-details-group')
 export default class SlDetailsGroup extends ShoelaceElement {
   static styles = styles;
 

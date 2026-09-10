@@ -1,5 +1,5 @@
 import { html } from 'lit';
-import {customElement, property, query} from 'lit/decorators.js';
+import {property, query} from 'lit/decorators.js';
 import styles from './back-to-top.styles.js';
 import ShoelaceElement from '../../internal/shoelace-element.js';
 import { LocalizeController } from '../../utilities/localize.js';
@@ -15,7 +15,6 @@ import { LocalizeController } from '../../utilities/localize.js';
  *
  * @csspart wrapper - The component's base wrapper.
  */
-@customElement('sl-back-to-top')
 export default class SlBackToTop extends ShoelaceElement {
   static styles = styles;
   targetElement:any;

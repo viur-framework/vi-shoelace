@@ -1,7 +1,7 @@
 import { html, PropertyValues, TemplateResult } from 'lit';
 import { classMap } from 'lit/directives/class-map.js';
 import ShoelaceElement from '../../internal/shoelace-element.js';
-import { customElement, property, queryAll } from 'lit/decorators.js';
+import { property, queryAll } from 'lit/decorators.js';
 import styles from './org-node.styles.js';
 export type OrgNodeDataType = {
   /**
@@ -36,7 +36,6 @@ export const defaultRoleRender = (data: OrgNodeDataType) => {
  *
  *  @cssproperty --example - An example CSS custom property.
  */
-@customElement('sl-org-node')
 export default class SlOrgNode extends ShoelaceElement {
   static styles = styles;
   /**

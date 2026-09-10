@@ -1,5 +1,5 @@
 import {html} from 'lit/static-html.js';
-import {customElement, property, query, state} from 'lit/decorators.js';
+import {property, query, state} from 'lit/decorators.js';
 import SlMenuItem from '../menu-item/menu-item.component.js';
 import SlDropdown from '../dropdown/dropdown.component.js';
 import SlMenu from '../menu/menu.component.js';
@@ -42,7 +42,6 @@ export interface SuggestionSource {
  * @csspart menu - The sl-menu component.
  * @csspart menu-item - The sl-menu-item component.
  */
-@customElement('sl-combobox')
 export default class SlCombobox extends ShoelaceElement {
   static styles = styles;
 

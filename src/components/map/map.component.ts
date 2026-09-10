@@ -1,5 +1,5 @@
 import { html } from 'lit';
-import {customElement, property, query} from 'lit/decorators.js';
+import {property, query} from 'lit/decorators.js';
 import ShoelaceElement from '../../internal/shoelace-element.js';
 import styles from './map.styles.js';
 // @ts-ignore
@@ -15,7 +15,6 @@ import {map, tileLayer, popup} from 'leaflet'
  *
  * @csspart base - The component's map wrapper.
  */
-@customElement('sl-map')
 export default class SlMap extends ShoelaceElement {
   static styles = styles;
   @query('#map') mapWrapper: HTMLElement;

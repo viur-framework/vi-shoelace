@@ -1,5 +1,5 @@
 import { html } from 'lit';
-import { customElement, property } from 'lit/decorators.js';
+import { property } from 'lit/decorators.js';
 import ShoelaceElement from '../../internal/shoelace-element.js';
 import styles from './table-wrapper.styles.js';
 // @ts-ignore
@@ -15,7 +15,6 @@ import {watchProps} from "../../internal/watchProps.js";
  *
  * @csspart search - The search Field.
  */
-@customElement('sl-table-wrapper')
 export default class SlTableWrapper extends ShoelaceElement {
   static styles = styles;
   tableElement:any;

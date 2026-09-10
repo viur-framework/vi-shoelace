@@ -1,5 +1,5 @@
 import { html, TemplateResult } from 'lit';
-import { customElement, property, query } from 'lit/decorators.js';
+import { property, query } from 'lit/decorators.js';
 import ShoelaceElement from '../../internal/shoelace-element.js';
 import { customStyle } from '../../internal/customStyle.js';
 import SlOrgNode, { defaultRoleRender, OrgNodeDataType } from '../org-node/org-node.component.js';
@@ -22,7 +22,6 @@ import styles from './org-tree.styles.js';
  * @cssproperty --example - An example CSS custom property.
  */
 @customStyle()
-@customElement('sl-org-tree')
 export default class SlOrgTree extends ShoelaceElement {
   static styles = styles;
   /**

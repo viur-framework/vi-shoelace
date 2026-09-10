@@ -1,5 +1,4 @@
 import { html } from 'lit';
-import { customElement } from 'lit/decorators.js';
 import ShoelaceElement from '../../internal/shoelace-element.js';
 import styles from './spinner-viur.styles.js';
 import type { CSSResultGroup } from 'lit';
@@ -16,7 +15,6 @@ import type { CSSResultGroup } from 'lit';
  * @cssproperty --indicator-color - The color of the indicator.
  * @cssproperty --speed - The time it takes for the spinner to complete one animation cycle.
  */
-@customElement('sl-spinner-viur')
 export default class SlSpinnerViur extends ShoelaceElement {
   static styles: CSSResultGroup = styles;
 

@@ -1,5 +1,5 @@
 import { html, nothing, PropertyValues, TemplateResult } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { property, state } from 'lit/decorators.js';
 import ShoelaceElement from '../../internal/shoelace-element.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { watchProps } from '../../internal/watchProps.js';
@@ -47,7 +47,6 @@ import styles from './pagination.styles.js';
  * @csspart page - The "of X" span in simple mode.
  * @csspart show-size-change - The page size selector.
  */
-@customElement('sl-pagination')
 export default class SlPagination extends ShoelaceElement {
   static styles = styles;
   static dependencies = {
