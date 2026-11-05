@@ -177,6 +177,11 @@
     "@esbuild/darwin-x64": "^0.25.12",
     "@esbuild/linux-x64": "^0.25.12"
   },
+  "overrides": {
+    "@typescript-eslint/typescript-estree": {
+      "minimatch": "^9.0.7"
+    }
+  },
   "lint-staged": {
     "*.{ts,js}": [
       "eslint --max-warnings 0 --cache --fix",
