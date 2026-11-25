@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import commandLineArgs from 'command-line-args';
 import copy from 'recursive-copy';
 import { deleteAsync } from 'del';
-import download from 'download';
+import download from '@xhmikosr/downloader';
 import fm from 'front-matter';
 import fs from 'fs/promises';
 import fso from 'fs';
