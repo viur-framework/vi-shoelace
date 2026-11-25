@@ -44,6 +44,11 @@ export default css`
   sl-button[disabled] {
     cursor: default;
   }
+  .ellipsis {
+    align-self: center;
+    margin: 0 3px;
+    color: var(--sl-color-neutral-600);
+  }
   sl-button sl-icon {
     color: var(--sl-color-neutral-600);
   }

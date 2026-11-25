@@ -2,6 +2,7 @@ import { html, nothing, PropertyValues, TemplateResult } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import ShoelaceElement from '../../internal/shoelace-element.js';
 import { repeat } from 'lit/directives/repeat.js';
+import { pageItems } from '../../internal/pagination.js';
 import { watchProps } from '../../internal/watchProps.js';
 import { onEvent } from '../../utilities/common.js';
 import { LocalizeController } from '../../utilities/localize.js';
@@ -42,6 +43,7 @@ import styles from './pagination.styles.js';
  * @csspart next - The icon inside the next-page button.
  * @csspart last - The icon inside the last-page button.
  * @csspart page-button - Every page number button.
+ * @csspart ellipsis - The gap marker between two page number buttons that are not neighbours.
  * @csspart active-page-button - The currently active page number button (combined with page-button).
  * @csspart page-jump - The page number input (simple mode or showPageChange).
  * @csspart page - The "of X" span in simple mode.
@@ -79,6 +81,10 @@ export default class SlPagination extends ShoelaceElement {
   @property({ type: Boolean, attribute: false }) showFirst = false;
   /** Show or not Show Jump directly to the last page */
   @property({ type: Boolean, attribute: false }) showLast = false;
+  /** How many page buttons stay visible at the start and at the end of the pages. */
+  @property({ type: Number, attribute: 'boundary-count' }) boundaryCount = 1;
+  /** How many page buttons stay visible on each side of the current page. */
+  @property({ type: Number, attribute: 'sibling-count' }) siblingCount = 1;
 
   @state() private _announceText = '';
   get pageCount() {
@@ -102,35 +108,19 @@ export default class SlPagination extends ShoelaceElement {
   }
   _renderPageButton() {
     const pageCount = this.pageCount;
-    const current = this.value;
-    let prev = current - 3;
-    let size = 3;
-    if (prev <= 1) {
-      prev = 1;
-      size = current - prev;
-    }
-    let next = current + (7 - size);
-    if (next > pageCount) {
-      next = pageCount;
-    }
-    if (next - prev < 7) {
-      prev = next - 7;
-      if (prev < 1) {
-        prev = 1;
-      }
-    }
-    const array = [];
-    for (let i = prev; i <= next; i++) {
-      array.push(i);
-    }
-    return html`${repeat(array, item => html`<sl-button
-      part="${this.value == item ? 'page-button active-page-button' : 'page-button'}"
-      size="small"
-      data-page-no=${item}
-      .variant=${this.value == item ? 'primary' : 'default'}
-      aria-label="${this.localize.term('goToPage', item, pageCount)}"
-      aria-current=${this.value == item ? 'page' : nothing}
-    >${item}</sl-button> `)}`;
+    const items = pageItems(this.value, pageCount, this.boundaryCount, this.siblingCount);
+    return html`${repeat(items, item =>
+      item === 'ellipsis'
+        ? html`<span part="ellipsis" class="ellipsis" aria-hidden="true">\u2026</span>`
+        : html`<sl-button
+            part="${this.value == item ? 'page-button active-page-button' : 'page-button'}"
+            size="small"
+            data-page-no=${item}
+            .variant=${this.value == item ? 'primary' : 'default'}
+            aria-label="${this.localize.term('goToPage', item, pageCount)}"
+            aria-current=${this.value == item ? 'page' : nothing}
+          >${item}</sl-button> `
+    )}`;
   }
 
   _renderPage() {

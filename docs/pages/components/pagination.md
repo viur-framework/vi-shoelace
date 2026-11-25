@@ -21,6 +21,15 @@ layout: component
 </script>
 ```
 
+### Page Window
+
+Only the first and last pages, the current page and its neighbours get a button; every wider gap is an ellipsis. `boundary-count` and `sibling-count` set how many pages stay visible at the edges and around the current page.
+
+```html:preview
+<sl-pagination total="2120" page-size="20" value="53"></sl-pagination>
+<sl-pagination total="2120" page-size="20" value="53" boundary-count="2" sibling-count="2"></sl-pagination>
+```
+
 ### Full Pagination
 
 ```html:preview

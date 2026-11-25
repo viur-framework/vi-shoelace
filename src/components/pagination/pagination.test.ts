@@ -128,6 +128,23 @@ describe('<sl-pagination>', () => {
       expect(activeButton?.textContent?.trim()).to.equal('5');
     });
 
+    it('should window the page buttons around the current page with ellipses', async () => {
+      const el = await fixture<SlPagination>(html`<sl-pagination total="110" page-size="10" value="6"></sl-pagination>`);
+      const labels = [...el.shadowRoot!.querySelectorAll('[part~="page-button"], [part~="ellipsis"]')].map(node =>
+        node.textContent?.trim()
+      );
+      expect(labels).to.deep.equal(['1', '…', '5', '6', '7', '…', '11']);
+    });
+
+    it('should widen the window with boundary-count and sibling-count', async () => {
+      const el = await fixture<SlPagination>(
+        html`<sl-pagination total="200" page-size="10" value="10" boundary-count="2" sibling-count="2"></sl-pagination>`
+      );
+      const pages = [...el.shadowRoot!.querySelectorAll('[part~="page-button"]')].map(node => node.textContent?.trim());
+      expect(pages).to.deep.equal(['1', '2', '8', '9', '10', '11', '12', '19', '20']);
+      expect(el.shadowRoot!.querySelectorAll('[part~="ellipsis"]').length).to.equal(2);
+    });
+
     it('should expose page-jump part when showPageChange is true', async () => {
       const el = await fixture<SlPagination>(html`<sl-pagination total="100" show-page-change></sl-pagination>`);
       expect(el.shadowRoot!.querySelector('[part~="page-jump"]')).to.exist;
